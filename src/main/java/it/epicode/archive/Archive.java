@@ -1,15 +1,14 @@
-package org.example.archive;
+package it.epicode.archive;
 
-import org.example.exceptions.BookNotFoundException;
-import org.example.exceptions.DuplicateItemException;
-import org.example.exceptions.MagazineNotFoundException;
-import org.example.products.book.Book;
-import org.example.products.book.Genre;
-import org.example.products.magazine.Magazine;
-import org.example.products.magazine.Periodicity;
+import it.epicode.exceptions.BookNotFoundException;
+import it.epicode.exceptions.DuplicateItemException;
+import it.epicode.exceptions.MagazineNotFoundException;
+import it.epicode.products.book.Book;
+import it.epicode.products.book.Genre;
+import it.epicode.products.magazine.Magazine;
+import it.epicode.products.magazine.Periodicity;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;

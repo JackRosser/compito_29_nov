@@ -1,6 +1,6 @@
-package org.example.products.magazine;
+package it.epicode.products.magazine;
 
-import org.example.products.Product;
+import it.epicode.products.Product;
 
 public class Magazine extends Product {
 private Periodicity periodicity;

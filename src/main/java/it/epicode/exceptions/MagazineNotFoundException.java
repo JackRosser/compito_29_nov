@@ -1,4 +1,4 @@
-package org.example.exceptions;
+package it.epicode.exceptions;
 
 public class MagazineNotFoundException extends RuntimeException {
     public MagazineNotFoundException(String message) {

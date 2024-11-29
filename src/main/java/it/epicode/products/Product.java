@@ -1,4 +1,4 @@
-package org.example.products;
+package it.epicode.products;
 
 public abstract class Product {
     private int isbn;

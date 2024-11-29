@@ -1,4 +1,4 @@
-package org.example.products.book;
+package it.epicode.products.book;
 
 public enum Genre {
     DYSTOPIAN,

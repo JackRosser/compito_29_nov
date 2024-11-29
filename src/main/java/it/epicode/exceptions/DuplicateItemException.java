@@ -1,4 +1,4 @@
-package org.example.exceptions;
+package it.epicode.exceptions;
 
 public class DuplicateItemException extends RuntimeException {
     public DuplicateItemException(String message) {

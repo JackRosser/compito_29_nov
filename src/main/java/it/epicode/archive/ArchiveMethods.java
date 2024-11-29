@@ -1,7 +1,7 @@
-package org.example.archive;
+package it.epicode.archive;
 
-import org.example.products.book.Genre;
-import org.example.products.magazine.Periodicity;
+import it.epicode.products.book.Genre;
+import it.epicode.products.magazine.Periodicity;
 
 public interface ArchiveMethods {
 

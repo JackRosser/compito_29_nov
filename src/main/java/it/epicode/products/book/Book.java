@@ -1,6 +1,6 @@
-package org.example.products.book;
+package it.epicode.products.book;
 
-import org.example.products.Product;
+import it.epicode.products.Product;
 
 public class Book extends Product {
 private String author;

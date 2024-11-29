@@ -1,9 +1,9 @@
-package org.example;
+package it.epicode;
 
-import org.example.archive.Archive;
-import org.example.exceptions.BadChoiceException;
-import org.example.products.book.Genre;
-import org.example.products.magazine.Periodicity;
+import it.epicode.archive.Archive;
+import it.epicode.exceptions.BadChoiceException;
+import it.epicode.products.book.Genre;
+import it.epicode.products.magazine.Periodicity;
 
 import java.util.Scanner;
 

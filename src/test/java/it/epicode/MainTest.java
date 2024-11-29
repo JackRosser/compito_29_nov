@@ -1,4 +1,4 @@
-package org.example;
+package it.epicode;
 
 import org.junit.jupiter.api.Test;
 
