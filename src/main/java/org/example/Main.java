@@ -11,7 +11,7 @@ public class Main {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        boolean exitProgram = false; // Variabile per controllare l'uscita dal programma
+        boolean exitProgram = false;
 
         while (!exitProgram) {
             String firstChoice = "";
@@ -19,7 +19,6 @@ public class Main {
             boolean validChoice = false;
             boolean secondValidChoice = false;
 
-            // STEP 1: MENU PRINCIPALE
             while (!validChoice) {
                 try {
                     System.out.println("Benvenuto, " +
@@ -38,16 +37,14 @@ public class Main {
                 }
             }
 
-            // Controllo per uscire dal programma
             if (firstChoice.equals("x")) {
                 exitProgram = true;
-                System.out.println("Grazie per aver usato il nostro programma. Arrivederci!");
+                System.out.println("Non dimenticare di mettermi 10, saluti!");
                 continue;
             }
 
-            Archive archive = Archive.getInstance(); // Inizializza l'archivio
+            Archive archive = Archive.getInstance();
 
-            // GESTIONE LIBRI
             if (firstChoice.equals("a")) {
                 while (!secondValidChoice) {
                     try {
@@ -70,22 +67,61 @@ public class Main {
                 }
 
                 if (secondChoice.equals("a")) {
-                    System.out.println("Definisci ISBN");
-                    int isbn = scanner.nextInt();
-                    scanner.nextLine();
+                    boolean validIsbn = false;
+                    int isbn = 0;
+                    while (!validIsbn) {
+                        try {
+                            System.out.println("Definisci ISBN");
+                            isbn = scanner.nextInt();
+                            scanner.nextLine();
+                            archive.searchBookIsbn(isbn);
+                            System.out.println("Errore: ISBN già esistente, inseriscine un altro.");
+                        } catch (Exception e) {
+                            if (e.getMessage().contains("not found")) {
+                                validIsbn = true;
+                            } else {
+                                System.out.println("Inserisci un valore numerico valido.");
+                                scanner.nextLine();
+                            }
+                        }
+                    }
+
                     System.out.println("Definisci titolo");
                     String title = scanner.nextLine();
+
                     System.out.println("Definisci anno di pubblicazione");
-                    int year = scanner.nextInt();
-                    scanner.nextLine();
+                    int year = 0;
+                    boolean validYear = false;
+                    while (!validYear) {
+                        try {
+                            year = scanner.nextInt();
+                            scanner.nextLine();
+                            validYear = true;
+                        } catch (Exception e) {
+                            System.out.println("Inserisci un anno valido.");
+                            scanner.nextLine();
+                        }
+                    }
+
                     System.out.println("Definisci numero pagine");
-                    int pages = scanner.nextInt();
-                    scanner.nextLine();
+                    int pages = 0;
+                    boolean validPages = false;
+                    while (!validPages) {
+                        try {
+                            pages = scanner.nextInt();
+                            scanner.nextLine();
+                            validPages = true;
+                        } catch (Exception e) {
+                            System.out.println("Inserisci un numero di pagine valido.");
+                            scanner.nextLine();
+                        }
+                    }
+
                     System.out.println("Definisci autore");
                     String author = scanner.nextLine();
+
                     Genre genre = null;
                     boolean validGenre = false;
-
                     while (!validGenre) {
                         try {
                             System.out.println("Scegli genere tra" +
@@ -105,91 +141,118 @@ public class Main {
                         }
                     }
 
-                    archive.addBook(isbn, title, year, pages, author, genre);
+                    try {
+                        archive.addBook(isbn, title, year, pages, author, genre);
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                    }
                 } else if (secondChoice.equals("b")) {
-                    System.out.println("Inserisci codice ISBN:");
-                    int isbn = scanner.nextInt();
-                    scanner.nextLine();
-                    archive.searchBookIsbn(isbn);
+                    boolean validIsbn = false;
+                    int isbn = 0;
+                    while (!validIsbn) {
+                        try {
+                            System.out.println("Inserisci codice ISBN:");
+                            isbn = scanner.nextInt();
+                            scanner.nextLine();
+                            archive.searchBookIsbn(isbn);
+                            validIsbn = true;
+                        } catch (Exception e) {
+                            System.out.println(e.getMessage());
+                            scanner.nextLine();
+                        }
+                    }
                 } else if (secondChoice.equals("c")) {
-                    System.out.println("Inserisci codice ISBN:");
-                    int isbn = scanner.nextInt();
-                    scanner.nextLine();
-                    archive.removeBookIsbn(isbn);
+                    boolean validIsbn = false;
+                    int isbn = 0;
+                    while (!validIsbn) {
+                        try {
+                            System.out.println("Inserisci codice ISBN:");
+                            isbn = scanner.nextInt();
+                            scanner.nextLine();
+                            archive.removeBookIsbn(isbn);
+                            validIsbn = true;
+                        } catch (Exception e) {
+                            System.out.println(e.getMessage());
+                            scanner.nextLine();
+                        }
+                    }
                 } else if (secondChoice.equals("d")) {
                     System.out.println("Inserisci anno di pubblicazione:");
-                    int year = scanner.nextInt();
-                    scanner.nextLine();
-                    archive.searchBookForYear(year);
+                    int year = 0;
+                    boolean validYear = false;
+                    while (!validYear) {
+                        try {
+                            year = scanner.nextInt();
+                            scanner.nextLine();
+                            archive.searchBookForYear(year);
+                            validYear = true;
+                        } catch (Exception e) {
+                            System.out.println(e.getMessage());
+                            scanner.nextLine();
+                        }
+                    }
                 } else if (secondChoice.equals("e")) {
                     System.out.println("Inserisci autore:");
                     String author = scanner.nextLine();
-                    archive.searchBookForAuthor(author);
+                    try {
+                        archive.searchBookForAuthor(author);
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                    }
                 } else if (secondChoice.equals("f")) {
-                    // Codice per aggiornare un libro
-                    System.out.println("Inserisci ISBN del libro da aggiornare:");
-                    int isbn = scanner.nextInt();
-                    scanner.nextLine();
+                    boolean validIsbn = false;
+                    int isbn = 0;
+                    while (!validIsbn) {
+                        try {
+                            System.out.println("Inserisci ISBN del libro da aggiornare:");
+                            isbn = scanner.nextInt();
+                            scanner.nextLine();
+                            archive.searchBookIsbn(isbn);
+                            validIsbn = true;
+                        } catch (Exception e) {
+                            System.out.println(e.getMessage());
+                            scanner.nextLine();
+                        }
+                    }
 
-                    System.out.println("Inserisci il nuovo titolo (lascia vuoto per mantenere invariato):");
+                    System.out.println("Inserisci nuovo titolo (premi invio per lasciare invariato):");
                     String newTitle = scanner.nextLine();
-
-                    System.out.println("Inserisci il nuovo anno di pubblicazione (digita 0 per mantenere invariato):");
+                    System.out.println("Inserisci nuovo anno di pubblicazione (inserisci -1 per lasciare invariato):");
                     int newYear = scanner.nextInt();
                     scanner.nextLine();
-
-                    System.out.println("Inserisci il nuovo numero di pagine (digita 0 per mantenere invariato):");
+                    System.out.println("Inserisci nuovo numero di pagine (inserisci -1 per lasciare invariato):");
                     int newPages = scanner.nextInt();
                     scanner.nextLine();
-
-                    System.out.println("Inserisci il nuovo autore (lascia vuoto per mantenere invariato):");
+                    System.out.println("Inserisci nuovo autore (premi invio per lasciare invariato):");
                     String newAuthor = scanner.nextLine();
 
                     Genre newGenre = null;
                     boolean validGenre = false;
-
                     while (!validGenre) {
                         try {
-                            System.out.println("Scegli il nuovo genere (lascia vuoto per mantenere invariato):" +
-                                    "\n" + Genre.ADVENTURE +
-                                    "\n" + Genre.CLASSIC +
-                                    "\n" + Genre.FICTION +
-                                    "\n" + Genre.FANTASY +
-                                    "\n" + Genre.DYSTOPIAN +
-                                    "\n" + Genre.HISTORICAL +
-                                    "\n" + Genre.PSYCOLOGICAL +
-                                    "\n" + Genre.ROMANCE);
+                            System.out.println("Inserisci nuovo genere (lascia vuoto per lasciare invariato):");
                             String input = scanner.nextLine().toUpperCase();
-
-                            if (input.isEmpty()) {
-                                validGenre = true;
-                            } else {
+                            if (!input.isEmpty()) {
                                 newGenre = Genre.valueOf(input);
-                                validGenre = true;
                             }
+                            validGenre = true;
                         } catch (IllegalArgumentException e) {
-                            System.out.println("Scegli un genere valido tra quelli dell'elenco.");
+                            System.out.println("Scegli un genere valido.");
                         }
                     }
 
-                    boolean updated = archive.updateBook(
-                            isbn,
-                            newTitle.isEmpty() ? null : newTitle,
-                            newYear == 0 ? -1 : newYear,
-                            newPages == 0 ? -1 : newPages,
-                            newAuthor.isEmpty() ? null : newAuthor,
-                            newGenre
-                    );
-
+                    boolean updated = archive.updateBook(isbn, newTitle.isEmpty() ? null : newTitle, newYear, newPages, newAuthor.isEmpty() ? null : newAuthor, newGenre);
                     if (updated) {
                         System.out.println("Libro aggiornato con successo.");
                     } else {
-                        System.out.println("Errore: libro con ISBN " + isbn + " non trovato.");
+                        System.out.println("Errore durante l'aggiornamento del libro.");
                     }
                 }
+
             }
 
-            // GESTIONE RIVISTE
+            // PARTE DELLE RIVISTE
+
             if (firstChoice.equals("b")) {
                 while (!secondValidChoice) {
                     try {
@@ -212,20 +275,58 @@ public class Main {
                 }
 
                 if (secondChoice.equals("a")) {
-                    System.out.println("Definisci ISBN");
-                    int isbn = scanner.nextInt();
-                    scanner.nextLine();
+                    boolean validIsbn = false;
+                    int isbn = 0;
+                    while (!validIsbn) {
+                        try {
+                            System.out.println("Definisci ISBN");
+                            isbn = scanner.nextInt();
+                            scanner.nextLine();
+                            archive.searchMagazineIsbn(isbn);
+                            System.out.println("Errore: ISBN già esistente, inseriscine un altro.");
+                        } catch (Exception e) {
+                            if (e.getMessage().contains("not found")) {
+                                validIsbn = true;
+                            } else {
+                                System.out.println("Inserisci un valore numerico valido.");
+                                scanner.nextLine();
+                            }
+                        }
+                    }
+
                     System.out.println("Definisci titolo");
                     String title = scanner.nextLine();
+
                     System.out.println("Definisci anno di pubblicazione");
-                    int year = scanner.nextInt();
-                    scanner.nextLine();
+                    int year = 0;
+                    boolean validYear = false;
+                    while (!validYear) {
+                        try {
+                            year = scanner.nextInt();
+                            scanner.nextLine();
+                            validYear = true;
+                        } catch (Exception e) {
+                            System.out.println("Inserisci un anno valido.");
+                            scanner.nextLine();
+                        }
+                    }
+
                     System.out.println("Definisci numero pagine");
-                    int pages = scanner.nextInt();
-                    scanner.nextLine();
+                    int pages = 0;
+                    boolean validPages = false;
+                    while (!validPages) {
+                        try {
+                            pages = scanner.nextInt();
+                            scanner.nextLine();
+                            validPages = true;
+                        } catch (Exception e) {
+                            System.out.println("Inserisci un numero di pagine valido.");
+                            scanner.nextLine();
+                        }
+                    }
+
                     Periodicity periodicity = null;
                     boolean validPeriodicity = false;
-
                     while (!validPeriodicity) {
                         try {
                             System.out.println("Scegli periodicità tra:" +
@@ -240,106 +341,132 @@ public class Main {
                         }
                     }
 
-                    archive.addMagazine(isbn, title, year, pages, periodicity);
+                    try {
+                        archive.addMagazine(isbn, title, year, pages, periodicity);
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                    }
                 } else if (secondChoice.equals("b")) {
-                    System.out.println("Inserisci codice ISBN della rivista:");
-                    int isbn = scanner.nextInt();
-                    scanner.nextLine();
-                    archive.searchMagazineIsbn(isbn);
+                    boolean validIsbn = false;
+                    int isbn = 0;
+                    while (!validIsbn) {
+                        try {
+                            System.out.println("Inserisci codice ISBN:");
+                            isbn = scanner.nextInt();
+                            scanner.nextLine();
+                            archive.searchMagazineIsbn(isbn);
+                            validIsbn = true;
+                        } catch (Exception e) {
+                            System.out.println(e.getMessage());
+                            scanner.nextLine();
+                        }
+                    }
                 } else if (secondChoice.equals("c")) {
-                    System.out.println("Inserisci codice ISBN della rivista da rimuovere:");
-                    int isbn = scanner.nextInt();
-                    scanner.nextLine();
-                    archive.removeMagazineIsbn(isbn);
+                    boolean validIsbn = false;
+                    int isbn = 0;
+                    while (!validIsbn) {
+                        try {
+                            System.out.println("Inserisci codice ISBN:");
+                            isbn = scanner.nextInt();
+                            scanner.nextLine();
+                            archive.removeMagazineIsbn(isbn);
+                            validIsbn = true;
+                            System.out.println("Rivista rimossa con successo.");
+                        } catch (Exception e) {
+                            System.out.println(e.getMessage());
+                            scanner.nextLine();
+                        }
+                    }
                 } else if (secondChoice.equals("d")) {
+                    System.out.println("Inserisci periodicità (WEEKLY, MONTHLY, SEMIANNUALY):");
                     Periodicity periodicity = null;
                     boolean validPeriodicity = false;
-
                     while (!validPeriodicity) {
                         try {
-                            System.out.println("Scegli periodicità per la ricerca:" +
-                                    "\n" + Periodicity.WEEKLY +
-                                    "\n" + Periodicity.MONTHLY +
-                                    "\n" + Periodicity.SEMIANNUALY);
                             String input = scanner.nextLine().toUpperCase();
                             periodicity = Periodicity.valueOf(input);
                             validPeriodicity = true;
+                            archive.searchMagazineForPeriodicity(periodicity);
                         } catch (IllegalArgumentException e) {
-                            System.out.println("Scegli una periodicità valida tra quelle elencate.");
+                            System.out.println("Inserisci una periodicità valida.");
+                        } catch (Exception e) {
+                            System.out.println(e.getMessage());
+                        }
+                    }
+                } else if (secondChoice.equals("e")) {
+                    System.out.println("Inserisci anno di pubblicazione:");
+                    int year = 0;
+                    boolean validYear = false;
+                    while (!validYear) {
+                        try {
+                            year = scanner.nextInt();
+                            scanner.nextLine();
+                            archive.searchMagazineForYear(year);
+                            validYear = true;
+                        } catch (Exception e) {
+                            System.out.println(e.getMessage());
+                            scanner.nextLine();
+                        }
+                    }
+                } else if (secondChoice.equals("f")) {
+                    boolean validIsbn = false;
+                    int isbn = 0;
+                    while (!validIsbn) {
+                        try {
+                            System.out.println("Inserisci ISBN della rivista da aggiornare:");
+                            isbn = scanner.nextInt();
+                            scanner.nextLine();
+                            archive.searchMagazineIsbn(isbn);
+                            validIsbn = true;
+                        } catch (Exception e) {
+                            System.out.println(e.getMessage());
+                            scanner.nextLine();
                         }
                     }
 
-                    archive.searchMagazineForPeriodicity(periodicity);
-                } else if (secondChoice.equals("e")) {
-                    System.out.println("Inserisci anno di pubblicazione:");
-                    int year = scanner.nextInt();
-                    scanner.nextLine();
-                    archive.searchMagazineForYear(year);
-                } else if (secondChoice.equals("f")) {
-                    System.out.println("Inserisci ISBN della rivista da aggiornare:");
-                    int isbn = scanner.nextInt();
-                    scanner.nextLine();
-
-                    System.out.println("Inserisci il nuovo titolo (lascia vuoto per mantenere invariato):");
+                    System.out.println("Inserisci nuovo titolo (premi invio per lasciare invariato):");
                     String newTitle = scanner.nextLine();
-
-                    System.out.println("Inserisci il nuovo anno di pubblicazione (digita 0 per mantenere invariato):");
+                    System.out.println("Inserisci nuovo anno di pubblicazione (inserisci -1 per lasciare invariato):");
                     int newYear = scanner.nextInt();
                     scanner.nextLine();
-
-                    System.out.println("Inserisci il nuovo numero di pagine (digita 0 per mantenere invariato):");
+                    System.out.println("Inserisci nuovo numero di pagine (inserisci -1 per lasciare invariato):");
                     int newPages = scanner.nextInt();
                     scanner.nextLine();
 
                     Periodicity newPeriodicity = null;
                     boolean validPeriodicity = false;
-
                     while (!validPeriodicity) {
                         try {
-                            System.out.println("Scegli la nuova periodicità (lascia vuoto per mantenere invariata):" +
-                                    "\n" + Periodicity.WEEKLY +
-                                    "\n" + Periodicity.MONTHLY +
-                                    "\n" + Periodicity.SEMIANNUALY);
+                            System.out.println("Inserisci nuova periodicità (lascia vuoto per lasciare invariato):");
                             String input = scanner.nextLine().toUpperCase();
-
-                            if (input.isEmpty()) {
-                                validPeriodicity = true;
-                            } else {
+                            if (!input.isEmpty()) {
                                 newPeriodicity = Periodicity.valueOf(input);
-                                validPeriodicity = true;
                             }
+                            validPeriodicity = true;
                         } catch (IllegalArgumentException e) {
-                            System.out.println("Scegli una periodicità valida tra quelle elencate.");
+                            System.out.println("Inserisci una periodicità valida.");
                         }
                     }
 
-                    boolean updated = archive.updateMagazine(
-                            isbn,
-                            newTitle.isEmpty() ? null : newTitle,
-                            newYear == 0 ? -1 : newYear,
-                            newPages == 0 ? -1 : newPages,
-                            newPeriodicity
-                    );
-
+                    boolean updated = archive.updateMagazine(isbn, newTitle.isEmpty() ? null : newTitle, newYear, newPages, newPeriodicity);
                     if (updated) {
                         System.out.println("Rivista aggiornata con successo.");
                     } else {
-                        System.out.println("Errore: rivista con ISBN " + isbn + " non trovata.");
+                        System.out.println("Errore durante l'aggiornamento della rivista.");
                     }
                 }
+
             }
 
-            // STAMPA TOTALE
             if (firstChoice.equals("c")) {
                 archive.printAll();
             }
 
-            // Chiedi se tornare al menu principale
             System.out.println("\nVuoi tornare al menu principale? (digita 's' per sì o 'n' per uscire)");
             String continueChoice = scanner.nextLine().toLowerCase();
             if (continueChoice.equals("n")) {
                 exitProgram = true;
-                System.out.println("Mi aspetto un 10 per tutto questo, arrivederci.");
+                System.out.println("Arrivederci.");
             }
         }
 
