@@ -1,5 +1,6 @@
 package org.example.archive;
 
+import org.example.exceptions.BookNotFoundException;
 import org.example.products.book.Book;
 import org.example.products.book.Genre;
 import org.example.products.magazine.Magazine;
@@ -53,12 +54,8 @@ public class Archive implements ArchiveMethods{
         Book searched = BOOKS.stream()
                 .filter(book -> book.getIsbn() == isbn)
                 .findFirst()
-                .orElse(null);
-        if (searched != null) {
-            System.out.println(searched);
-        } else {
-            System.out.println("This book don't exist");
-        }
+                .orElseThrow(()-> new BookNotFoundException("Book with ISBN " + isbn + " not found."));
+        System.out.println(searched);
     }
 
     @Override
