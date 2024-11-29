@@ -8,14 +8,15 @@ import org.example.products.book.Genre;
 import org.example.products.magazine.Magazine;
 import org.example.products.magazine.Periodicity;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class Archive implements ArchiveMethods{
-
-    private final List<Book> BOOKS = Arrays.asList(
+    private static Archive instance;
+    private final List<Book> BOOKS = new ArrayList<>(List.of(
             new Book(12345, "1984", 1949, 328, "George Orwell", Genre.DYSTOPIAN),
             new Book(67890, "To Kill a Mockingbird", 1960, 281, "Harper Lee", Genre.FICTION),
             new Book(11121, "The Great Gatsby", 1925, 180, "F. Scott Fitzgerald", Genre.CLASSIC),
@@ -26,10 +27,10 @@ public class Archive implements ArchiveMethods{
             new Book(66676, "Moby Dick", 1851, 635, "Herman Melville", Genre.ADVENTURE),
             new Book(77787, "War and Peace", 1869, 1225, "Leo Tolstoy", Genre.HISTORICAL),
             new Book(88898, "Crime and Punishment", 1866, 671, "Fyodor Dostoevsky", Genre.PSYCOLOGICAL)
-    );
+    ));
 
 
-    private final List<Magazine> MAGAZINES = Arrays.asList(
+    private final List<Magazine> MAGAZINES = new ArrayList<>(List.of(
             new Magazine(1001, "Tech Today", 2023, 48, Periodicity.MONTHLY),
             new Magazine(1002, "Health & Wellness", 2023, 64, Periodicity.WEEKLY),
             new Magazine(1003, "Traveler's Guide", 2022, 96, Periodicity.MONTHLY),
@@ -40,7 +41,16 @@ public class Archive implements ArchiveMethods{
             new Magazine(1008, "Fashion Forward", 2023, 120, Periodicity.MONTHLY),
             new Magazine(1009, "Automotive Trends", 2022, 88, Periodicity.SEMIANNUALY),
             new Magazine(1010, "Music Insider", 2023, 52, Periodicity.WEEKLY)
-    );
+    ));
+
+    private Archive() {}
+
+    public static Archive getInstance() {
+        if (instance == null) {
+            instance = new Archive();
+        }
+        return instance;
+    }
 
     // BOOKS METHODS
 
@@ -81,7 +91,7 @@ public class Archive implements ArchiveMethods{
         List<Book> searched = BOOKS.stream()
                 .filter(book -> book.getYear() == year)
                 .sorted(Comparator.comparing(Book::getTitle))
-                .toList();
+                .collect(Collectors.toList());
         if (searched.isEmpty()) {throw new BookNotFoundException("No books found for the year " + year);}
         System.out.println("Books found for the year " + year);
         searched.forEach(System.out::println);
@@ -104,35 +114,23 @@ searched.forEach(System.out::println);
 
     @Override
     public boolean updateBook(int isbn, String newTitle, int newYear, int newPages, String newAuthor, Genre newGenre) {
-        Book bookToUpdate = BOOKS.stream()
-                .filter(book -> book.getIsbn() == isbn)
-                .findFirst()
-                .orElse(null);
-
-        if (bookToUpdate != null) {
-            if (newTitle != null) {
-                bookToUpdate.setTitle(newTitle);
+        for (int i = 0; i < BOOKS.size(); i++) {
+            if (BOOKS.get(i).getIsbn() == isbn) {
+                Book updatedBook = new Book(
+                        isbn,
+                        newTitle != null ? newTitle : BOOKS.get(i).getTitle(),
+                        newYear != -1 ? newYear : BOOKS.get(i).getYear(),
+                        newPages != -1 ? newPages : BOOKS.get(i).getPages(),
+                        newAuthor != null ? newAuthor : BOOKS.get(i).getAuthor(),
+                        newGenre != null ? newGenre : BOOKS.get(i).getGenre()
+                );
+                BOOKS.set(i, updatedBook);
+                return true;
             }
-            if (newYear != -1) {
-                bookToUpdate.setYear(newYear);
-            }
-            if (newPages != -1) {
-                bookToUpdate.setPages(newPages);
-            }
-            if (newAuthor != null) {
-                bookToUpdate.setAuthor(newAuthor);
-            }
-            if (newGenre != null) {
-                bookToUpdate.setGenre(newGenre);
-            }
-
-            System.out.println("Libro aggiornato: " + bookToUpdate);
-            return true;
-        } else {
-            System.out.println("Errore: libro con ISBN " + isbn + " non trovato.");
-            return false;
         }
+        return false;
     }
+
 
 
 
@@ -160,41 +158,44 @@ MAGAZINES.add(newMagazine);
 
     @Override
     public void removeMagazineIsbn(int isbn) {
-        MAGAZINES.removeIf(magazine -> magazine.getIsbn() == isbn);
-        System.out.println("Magazine with ISBN " + isbn + " removed (if it existed)");
+        boolean removed = MAGAZINES.removeIf(magazine -> magazine.getIsbn() == isbn);
+        if (!removed) {
+            throw new MagazineNotFoundException("Magazine with ISBN " + isbn + " not found.");
+        }
     }
+
 
     @Override
     public void searchMagazineForYear(int year) {
         List<Magazine> searched = MAGAZINES.stream()
                 .filter(magazine -> magazine.getYear() == year)
                 .sorted(Comparator.comparing(Magazine::getTitle))
-                .toList();
+                .collect(Collectors.toList());
 
-if (searched.isEmpty()) {throw new MagazineNotFoundException("Nothing magazines in this year");}
+
+        if (searched.isEmpty()) {throw new MagazineNotFoundException("Nothing magazines in this year");}
         System.out.println("Magazines for " + year);
 searched.forEach(System.out::println);
     }
 
     @Override
     public boolean updateMagazine(int isbn, String newTitle, int newYear, int newPages, Periodicity newPeriodicity) {
-        Magazine magazineToUpdate = MAGAZINES.stream()
-                .filter(magazine -> magazine.getIsbn() == isbn)
-                .findFirst()
-                .orElse(null);
-
-        if (magazineToUpdate != null) {
-            magazineToUpdate.setTitle(newTitle);
-            magazineToUpdate.setYear(newYear);
-            magazineToUpdate.setPages(newPages);
-            magazineToUpdate.setPeriodicity(newPeriodicity);
-            System.out.println("Updated magazine: " + magazineToUpdate);
-            return true;
-        } else {
-            System.out.println("Magazine not found: " + isbn);
-            return false;
+        for (int i = 0; i < MAGAZINES.size(); i++) {
+            if (MAGAZINES.get(i).getIsbn() == isbn) {
+                Magazine updatedMagazine = new Magazine(
+                        isbn,
+                        newTitle != null ? newTitle : MAGAZINES.get(i).getTitle(),
+                        newYear != -1 ? newYear : MAGAZINES.get(i).getYear(),
+                        newPages != -1 ? newPages : MAGAZINES.get(i).getPages(),
+                        newPeriodicity != null ? newPeriodicity : MAGAZINES.get(i).getPeriodicity()
+                );
+                MAGAZINES.set(i, updatedMagazine);
+                return true;
+            }
         }
+        return false;
     }
+
 
     @Override
     public void searchMagazineForPeriodicity(Periodicity periodicity) {
@@ -237,13 +238,13 @@ searched.forEach(System.out::println);
         averagePages /= (totalBooks + totalMagazines);
 
         // STAMPO I RISULTATI
-        System.out.println("Catalog statistics:");
-        System.out.println("Total books: " + totalBooks);
-        System.out.println("Total magazines: " + totalMagazines);
+        System.out.println("Statistiche:");
+        System.out.println("Libri totali: " + totalBooks);
+        System.out.println("Riviste totali: " + totalMagazines);
         if (maxPagesElement != null) {
-            System.out.println("Element with the most pages: " + maxPagesElement);
+            System.out.println("Elemento con maggior numero di pagine: " + maxPagesElement);
         }
-        System.out.println("Average pages across all elements: " + averagePages);
+        System.out.println("Media pagine: " + averagePages);
     }
 
 }
