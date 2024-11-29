@@ -1,5 +1,6 @@
 package org.example;
 
+import org.example.archive.Archive;
 import org.example.exceptions.BadChoiceException;
 import org.example.products.book.Genre;
 
@@ -77,7 +78,7 @@ public class Main {
             System.out.println("Definisci autore");
             String author = scanner.nextLine();
             boolean validGenre = false;
-            String genre;
+            Genre genre = null;
             while(!validGenre) {
                 try {
                     System.out.println("Scegli genere tra" +
@@ -89,7 +90,8 @@ public class Main {
                             "\n" + Genre.HISTORICAL +
                             "\n" + Genre.PSYCOLOGICAL +
                             "\n" + Genre.ROMANCE);
-                    genre = scanner.nextLine().toUpperCase();
+                    String input = scanner.nextLine().toUpperCase();
+                    genre = Genre.valueOf(input);
                     if (!genre.equals(Genre.ADVENTURE) && !genre.equals(Genre.CLASSIC) && !genre.equals(Genre.FICTION) && !genre.equals(Genre.FANTASY) && !genre.equals(Genre.DYSTOPIAN) && !genre.equals(Genre.HISTORICAL) && !genre.equals(Genre.PSYCOLOGICAL) && !genre.equals(Genre.ROMANCE)) {
                         throw new BadChoiceException("Scegli un genere tra quelli dell'elenco");
                     }
@@ -98,7 +100,91 @@ public class Main {
                     System.out.println(e.getMessage());
                 }
             }
+Archive archive = new Archive();
+            archive.addBook(isbn, title, year, pages, author, genre);
+        } else if (secondChoice.equals("b")) {
+            System.out.println("Inserisci codice ISBN");
+            int isbn = scanner.nextInt();
+            Archive archive = new Archive();
+            archive.searchBookIsbn(isbn);
+        } else if (secondChoice.equals("c")) {
+            System.out.println("Inserisci codice ISBN");
+            int isbn = scanner.nextInt();
+            Archive archive = new Archive();
+            archive.removeBookIsbn(isbn);
+        } else if (secondChoice.equals("d")) {
+            System.out.println("Inserisci anno di pubblicazione");
+            int year = scanner.nextInt();
+            Archive archive = new Archive();
+            archive.searchBookForYear(year);
+        } else if (secondChoice.equals("e")) {
+            System.out.println("Inserisci autore");
+            String author = scanner.nextLine();
+            Archive archive = new Archive();
+            archive.searchBookForAuthor(author);
+        } else if (secondChoice.equals("f")) {
+            System.out.println("Inserisci ISBN del libro da aggiornare:");
+            int isbn = scanner.nextInt();
+            scanner.nextLine();
+
+            System.out.println("Inserisci il nuovo titolo (lascia vuoto per mantenere invariato):");
+            String newTitle = scanner.nextLine();
+
+            System.out.println("Inserisci il nuovo anno di pubblicazione (digita 0 per mantenere invariato):");
+            int newYear = scanner.nextInt();
+            scanner.nextLine();
+
+            System.out.println("Inserisci il nuovo numero di pagine (digita 0 per mantenere invariato):");
+            int newPages = scanner.nextInt();
+            scanner.nextLine();
+
+            System.out.println("Inserisci il nuovo autore (lascia vuoto per mantenere invariato):");
+            String newAuthor = scanner.nextLine();
+
+            Genre newGenre = null;
+            boolean validGenre = false;
+
+            while (!validGenre) {
+                try {
+                    System.out.println("Scegli il nuovo genere (lascia vuoto per mantenere invariato):" +
+                            "\n" + Genre.ADVENTURE +
+                            "\n" + Genre.CLASSIC +
+                            "\n" + Genre.FICTION +
+                            "\n" + Genre.FANTASY +
+                            "\n" + Genre.DYSTOPIAN +
+                            "\n" + Genre.HISTORICAL +
+                            "\n" + Genre.PSYCOLOGICAL +
+                            "\n" + Genre.ROMANCE);
+                    String input = scanner.nextLine().toUpperCase();
+
+                    if (input.isEmpty()) {
+                        validGenre = true;
+                    } else {
+                        newGenre = Genre.valueOf(input);
+                        validGenre = true;
+                    }
+                } catch (IllegalArgumentException e) {
+                    System.out.println("Scegli un genere valido tra quelli dell'elenco.");
+                }
+            }
+
+            Archive archive = new Archive();
+            boolean updated = archive.updateBook(
+                    isbn,
+                    newTitle.isEmpty() ? null : newTitle,
+                    newYear == 0 ? -1 : newYear,
+                    newPages == 0 ? -1 : newPages,
+                    newAuthor.isEmpty() ? null : newAuthor,
+                    newGenre
+            );
+
+            if (updated) {
+                System.out.println("Libro aggiornato con successo.");
+            } else {
+                System.out.println("Errore: libro con ISBN " + isbn + " non trovato.");
+            }
         }
+
 
         //_____________________________________________________________
 

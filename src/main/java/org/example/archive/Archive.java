@@ -110,18 +110,30 @@ searched.forEach(System.out::println);
                 .orElse(null);
 
         if (bookToUpdate != null) {
-            bookToUpdate.setTitle(newTitle);
-            bookToUpdate.setYear(newYear);
-            bookToUpdate.setPages(newPages);
-            bookToUpdate.setAuthor(newAuthor);
-            bookToUpdate.setGenre(newGenre);
-            System.out.println("Updated book: " + bookToUpdate);
+            if (newTitle != null) {
+                bookToUpdate.setTitle(newTitle);
+            }
+            if (newYear != -1) {
+                bookToUpdate.setYear(newYear);
+            }
+            if (newPages != -1) {
+                bookToUpdate.setPages(newPages);
+            }
+            if (newAuthor != null) {
+                bookToUpdate.setAuthor(newAuthor);
+            }
+            if (newGenre != null) {
+                bookToUpdate.setGenre(newGenre);
+            }
+
+            System.out.println("Libro aggiornato: " + bookToUpdate);
             return true;
         } else {
-            System.out.println("Book not found: " + isbn);
+            System.out.println("Errore: libro con ISBN " + isbn + " non trovato.");
             return false;
         }
- }
+    }
+
 
 
     // MAGAZINE METHODS
