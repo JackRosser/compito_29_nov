@@ -31,8 +31,13 @@ public String getAuthor() {
     @Override
     public String toString() {
         return "Book{" +
-                "author='" + author + '\'' +
-                ", genre='" + genre + '\'' +
+                "ISBN=" + getIsbn() +
+                ", Title='" + getTitle() + '\'' +
+                ", Year=" + getYear() +
+                ", Pages=" + getPages() +
+                ", Author='" + author + '\'' +
+                ", Genre=" + genre +
                 '}';
     }
+
 }

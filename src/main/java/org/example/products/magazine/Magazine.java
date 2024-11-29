@@ -21,7 +21,12 @@ private Periodicity periodicity;
     @Override
     public String toString() {
         return "Magazine{" +
-                "periodicity=" + periodicity +
+                "ISBN=" + getIsbn() +
+                ", Title='" + getTitle() + '\'' +
+                ", Year=" + getYear() +
+                ", Pages=" + getPages() +
+                ", Periodicity=" + periodicity +
                 '}';
     }
+
 }
