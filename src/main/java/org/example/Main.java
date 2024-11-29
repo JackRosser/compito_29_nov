@@ -1,8 +1,8 @@
 package org.example;
 
-public class Application {
+public class Main {
 
     public static void main(String[] args) {
-        // INSERIRE TUTTE LE fuNziONI RICHIESTE
+
     }
 }

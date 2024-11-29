@@ -1,6 +1,8 @@
 package org.example.archive;
 
 import org.example.exceptions.BookNotFoundException;
+import org.example.exceptions.DuplicateItemException;
+import org.example.exceptions.MagazineNotFoundException;
 import org.example.products.book.Book;
 import org.example.products.book.Genre;
 import org.example.products.magazine.Magazine;
@@ -44,10 +46,15 @@ public class Archive implements ArchiveMethods{
 
     @Override
     public void addBook(int isbn, String title, int year, int pages, String author, Genre genre) {
-    Book newBook = new Book(isbn, title, year, pages, author, genre);
-    BOOKS.add(newBook);
-    System.out.println(newBook.getTitle() + " add to list");
+        boolean exists = BOOKS.stream().anyMatch(book -> book.getIsbn() == isbn);
+        if (exists) {
+            throw new DuplicateItemException("Book with ISBN " + isbn + " already exists.");
+        }
+        Book newBook = new Book(isbn, title, year, pages, author, genre);
+        BOOKS.add(newBook);
+        System.out.println(newBook.getTitle() + " added to the list.");
     }
+
 
     @Override
     public void searchBookIsbn(int isbn) {
@@ -60,8 +67,14 @@ public class Archive implements ArchiveMethods{
 
     @Override
     public void removeBookIsbn(int isbn) {
-    BOOKS.remove(isbn);
+        boolean removed = BOOKS.removeIf(book -> book.getIsbn() == isbn);
+        if (!removed) {
+            throw new BookNotFoundException("Book with ISBN " + isbn + " not found. Cannot remove.");
+        } else {
+            System.out.println("Book with ISBN " + isbn + " removed successfully.");
+        }
     }
+
 
     @Override
     public void searchBookForYear(int year) {
@@ -69,13 +82,10 @@ public class Archive implements ArchiveMethods{
                 .filter(book -> book.getYear() == year)
                 .sorted(Comparator.comparing(Book::getTitle))
                 .toList();
+        if (searched.isEmpty()) {throw new BookNotFoundException("No books found for the year " + year);}
+        System.out.println("Books found for the year " + year);
+        searched.forEach(System.out::println);
 
-        if (!searched.isEmpty()) {
-            System.out.println("Books founded for " + year + ":");
-            searched.forEach(System.out::println);
-        } else {
-            System.out.println("Books not founds for " + year);
-        }
     }
 
 
@@ -86,12 +96,9 @@ public class Archive implements ArchiveMethods{
             .sorted(Comparator.comparing(Book::getTitle))
             .toList();
 
-    if (!searched.isEmpty()) {
-        System.out.println("Books founded for " + author + ":");
-        searched.forEach(System.out::println);
-    } else {
-        System.out.println("Books not founds for " + author);
-    }
+if (searched.isEmpty()) {throw new BookNotFoundException("No books found for " + author);}
+        System.out.println("Books found for " + author);
+searched.forEach(System.out::println);
 
     }
 
@@ -121,9 +128,13 @@ public class Archive implements ArchiveMethods{
 
     @Override
     public void addMagazine(int isbn, String title, int year, int pages, Periodicity periodicity) {
-        Magazine newMagazine = new Magazine(isbn, title, year, pages, periodicity);
-        MAGAZINES.add(newMagazine);
-        System.out.println(newMagazine.getTitle() + " added to the list");
+boolean exists = MAGAZINES.stream().anyMatch(magazine -> magazine.getIsbn() == isbn);
+if (exists) {
+    throw new DuplicateItemException("Magazine with " + isbn + " already exists");
+}
+Magazine newMagazine = new Magazine(isbn, title, year, pages, periodicity);
+MAGAZINES.add(newMagazine);
+        System.out.println(newMagazine.getTitle() + " added to list");
     }
 
     @Override
@@ -131,13 +142,8 @@ public class Archive implements ArchiveMethods{
         Magazine searched = MAGAZINES.stream()
                 .filter(magazine -> magazine.getIsbn() == isbn)
                 .findFirst()
-                .orElse(null);
-
-        if (searched != null) {
-            System.out.println(searched);
-        } else {
-            System.out.println("This magazine doesn't exist");
-        }
+                .orElseThrow(()-> new MagazineNotFoundException("Magazine with ISBN " + isbn + " not found."));
+        System.out.println(searched);
     }
 
     @Override
@@ -153,12 +159,9 @@ public class Archive implements ArchiveMethods{
                 .sorted(Comparator.comparing(Magazine::getTitle))
                 .toList();
 
-        if (!searched.isEmpty()) {
-            System.out.println("Magazines found for year " + year + ":");
-            searched.forEach(System.out::println);
-        } else {
-            System.out.println("No magazines found for year " + year);
-        }
+if (searched.isEmpty()) {throw new MagazineNotFoundException("Nothing magazines in this year");}
+        System.out.println("Magazines for " + year);
+searched.forEach(System.out::println);
     }
 
     @Override
@@ -188,12 +191,9 @@ public class Archive implements ArchiveMethods{
                 .sorted(Comparator.comparing(Magazine::getTitle))
                 .toList();
 
-        if (!searched.isEmpty()) {
-            System.out.println("Magazines with periodicity " + periodicity + ":");
-            searched.forEach(System.out::println);
-        } else {
-            System.out.println("No magazines found with periodicity " + periodicity);
-        }
+if(searched.isEmpty()) {throw new MagazineNotFoundException("Nothing magazine for " + periodicity);}
+        System.out.println("Magazines found for " + periodicity);
+searched.forEach(System.out::println);
     }
 
 
